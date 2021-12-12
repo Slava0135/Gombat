@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Gombat/core"
-	"Gombat/core/assets"
+	"Gombat/game"
+	"Gombat/game/assets"
 	"github.com/hajimehoshi/ebiten/v2"
 	"log"
 )
@@ -17,7 +17,7 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Gombat")
 	ebiten.SetWindowResizable(true)
-	if err := ebiten.RunGame(core.NewGame(images)); err != nil {
+	if err := ebiten.RunGame(game.NewGame(images)); err != nil {
 		log.Fatal(err)
 	}
 }

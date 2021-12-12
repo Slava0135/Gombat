@@ -1,21 +1,21 @@
-package core
+package game
 
 import (
-	"Gombat/core/assets"
-	"Gombat/core/model"
+	"Gombat/game/assets"
+	"Gombat/game/core"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
 )
 
 type Game struct {
 	Images    *assets.Images
-	GameState *model.GameState
+	GameState *core.GameState
 }
 
 func NewGame(images *assets.Images) *Game {
 	g := new(Game)
 	g.Images = images
-	g.GameState = model.NewGameState(2, 4, 16, 10)
+	g.GameState = core.NewGameState(2, 4, 16, 10)
 	return g
 }
 
