@@ -9,30 +9,6 @@ import (
 	"log"
 )
 
-type Images struct {
-	Bricks   *ebiten.Image
-	Concrete *ebiten.Image
-	Glass    *ebiten.Image
-	Gop      *ebiten.Image
-	Grass    *ebiten.Image
-	Planks   *ebiten.Image
-	Road     *ebiten.Image
-	Water    *ebiten.Image
-}
-
-func LoadImages() *Images {
-	images := new(Images)
-	images.Bricks = loadImage(bricks)
-	images.Concrete = loadImage(concrete)
-	images.Glass = loadImage(glass)
-	images.Gop = loadImage(gop)
-	images.Grass = loadImage(grass)
-	images.Planks = loadImage(planks)
-	images.Road = loadImage(road)
-	images.Water = loadImage(water)
-	return images
-}
-
 var (
 	//go:embed images/blocks/bricks.png
 	bricks []byte
@@ -51,6 +27,19 @@ var (
 	//go:embed images/floors/water.png
 	water []byte
 )
+
+func LoadImages() *map[string]*ebiten.Image {
+	return &map[string]*ebiten.Image{
+		"bricks":   loadImage(bricks),
+		"concrete": loadImage(concrete),
+		"glass":    loadImage(glass),
+		"gop":      loadImage(gop),
+		"grass":    loadImage(grass),
+		"planks":   loadImage(planks),
+		"road":     loadImage(road),
+		"water":    loadImage(water),
+	}
+}
 
 func loadImage(b []byte) *ebiten.Image {
 	img, _, err := image.Decode(bytes.NewReader(b))
