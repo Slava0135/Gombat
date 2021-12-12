@@ -1,8 +1,9 @@
 package game
 
 import (
-	"Gombat/game/core"
 	"github.com/hajimehoshi/ebiten/v2"
+	"gombat/game/assets"
+	"gombat/game/core"
 	"image/color"
 )
 
@@ -14,7 +15,13 @@ type Game struct {
 func NewGame(images *map[string]*ebiten.Image) *Game {
 	g := new(Game)
 	g.Images = images
-	g.GameState = core.NewGameState(2, 4, 16, 10)
+	g.GameState = core.NewGameState(2, 4)
+	//g.GameState.World = core.NewEmptyWorld(16, 8)
+	m, err := assets.LoadMap("test")
+	if err != nil {
+	} else {
+		g.GameState.World = m
+	}
 	return g
 }
 

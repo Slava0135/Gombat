@@ -1,7 +1,7 @@
 package core
 
 type World struct {
-	Height, Width int
+	Width, Height int
 	Floors        [][]*Floor
 	Blocks        [][]*Block
 }
@@ -25,23 +25,24 @@ var (
 		{"water", false},
 	}
 	Blocks = []*Block{
+		{"air", false, false},
 		{"bricks", true, false},
 		{"glass", true, true},
 		{"planks", true, true},
 	}
 )
 
-func NewEmptyWorld(height, width int) *World {
+func NewEmptyWorld(width, height int) *World {
 	w := new(World)
-	w.Height = height
 	w.Width = width
-	w.Blocks = make([][]*Block, height)
+	w.Height = height
+	w.Blocks = make([][]*Block, width)
 	for i := range w.Blocks {
-		w.Blocks[i] = make([]*Block, width)
+		w.Blocks[i] = make([]*Block, height)
 	}
-	w.Floors = make([][]*Floor, height)
+	w.Floors = make([][]*Floor, width)
 	for i := range w.Floors {
-		w.Floors[i] = make([]*Floor, width)
+		w.Floors[i] = make([]*Floor, height)
 	}
 	return w
 }

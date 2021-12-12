@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Gombat/game"
-	"Gombat/game/assets"
 	"github.com/hajimehoshi/ebiten/v2"
+	"gombat/game"
+	"gombat/game/assets"
 	"log"
 )
 

@@ -1,4 +1,4 @@
-module Gombat
+module gombat
 
 go 1.17
 

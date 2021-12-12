@@ -19,9 +19,8 @@ type Team struct {
 	Gops []*Gop
 }
 
-func NewGameState(teamAmount, teamSize, height, width int) *GameState {
+func NewGameState(teamAmount, teamSize int) *GameState {
 	gs := new(GameState)
-	gs.World = NewEmptyWorld(height, width)
 	gs.Teams = make([]*Team, teamAmount)
 	for i := range gs.Teams {
 		t := new(Team)
