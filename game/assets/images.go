@@ -28,17 +28,15 @@ var (
 	water []byte
 )
 
-func LoadImages() *map[string]*ebiten.Image {
-	return &map[string]*ebiten.Image{
-		"bricks":   loadImage(bricks),
-		"concrete": loadImage(concrete),
-		"glass":    loadImage(glass),
-		"gop":      loadImage(gop),
-		"grass":    loadImage(grass),
-		"planks":   loadImage(planks),
-		"road":     loadImage(road),
-		"water":    loadImage(water),
-	}
+var Images = map[string]*ebiten.Image{
+	"bricks":   loadImage(bricks),
+	"concrete": loadImage(concrete),
+	"glass":    loadImage(glass),
+	"gop":      loadImage(gop),
+	"grass":    loadImage(grass),
+	"planks":   loadImage(planks),
+	"road":     loadImage(road),
+	"water":    loadImage(water),
 }
 
 func loadImage(b []byte) *ebiten.Image {

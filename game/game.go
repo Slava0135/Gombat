@@ -4,24 +4,18 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"gombat/game/assets"
 	"gombat/game/core"
-	"image/color"
+	"gombat/game/view"
 )
 
 type Game struct {
-	Images    *map[string]*ebiten.Image
 	GameState *core.GameState
 }
 
-func NewGame(images *map[string]*ebiten.Image) *Game {
+func NewGame() *Game {
 	g := new(Game)
-	g.Images = images
 	g.GameState = core.NewGameState(2, 4)
-	//g.GameState.World = core.NewEmptyWorld(16, 8)
-	m, err := assets.LoadMap("test")
-	if err != nil {
-	} else {
-		g.GameState.World = m
-	}
+	m, _ := assets.LoadMap("test")
+	g.GameState.World = m
 	return g
 }
 
@@ -30,7 +24,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(color.White)
+	view.DrawGameState(screen, g.GameState)
 }
 
 func (*Game) Layout(outsideWidth, outsideHeight int) (int, int) {
