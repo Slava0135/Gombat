@@ -14,7 +14,7 @@ type Game struct {
 func NewGame() *Game {
 	g := new(Game)
 	g.GameState = core.NewGameState(2, 4)
-	m, _ := assets.LoadMap("test")
+	m, _ := assets.LoadMap("test2")
 	g.GameState.World = m
 	return g
 }

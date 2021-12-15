@@ -6,7 +6,7 @@ import (
 	"gombat/game/core"
 )
 
-const drawScale = 4
+const drawScale = 8
 const tileSize = 8
 
 func drawWorld(img *ebiten.Image, world *core.World) {
