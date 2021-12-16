@@ -19,7 +19,7 @@ type Game struct {
 func NewGame() *Game {
 	g := new(Game)
 	g.GameState = core.NewGameState(2, 4)
-	m, _ := assets.LoadMap("test2")
+	m, _ := assets.LoadMap("test3")
 	g.GameState.World = m
 	g.ViewOptions = &view.ViewOptions{
 		CameraPos: &util.Position{},
@@ -29,6 +29,19 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	g.UpdateControls()
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	view.DrawGameState(screen, g.ViewOptions, g.GameState)
+}
+
+func (*Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return outsideWidth, outsideHeight
+}
+
+func (g *Game) UpdateControls() {
 	if ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) {
 		g.ViewOptions.CameraPos.Y += scrollSpeed
 	}
@@ -52,13 +65,4 @@ func (g *Game) Update() error {
 	g.ViewOptions.CameraPos.Y *= ds
 	g.ViewOptions.CameraPos.X += float64(w) * (1 - ds) / 2
 	g.ViewOptions.CameraPos.Y += float64(h) * (1 - ds) / 2
-	return nil
-}
-
-func (g *Game) Draw(screen *ebiten.Image) {
-	view.DrawGameState(screen, g.ViewOptions, g.GameState)
-}
-
-func (*Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return outsideWidth, outsideHeight
 }
