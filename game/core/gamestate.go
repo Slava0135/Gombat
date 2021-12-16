@@ -1,5 +1,7 @@
 package core
 
+import "gombat/game/util"
+
 type GameState struct {
 	World *World
 	Teams []*Team
@@ -8,11 +10,7 @@ type GameState struct {
 type Gop struct {
 	Health int
 	Team   *Team
-	Pos    Position
-}
-
-type Position struct {
-	X, Y int
+	Pos    util.Position
 }
 
 type Team struct {
@@ -26,7 +24,7 @@ func NewGameState(teamAmount, teamSize int) *GameState {
 		t := new(Team)
 		t.Gops = make([]*Gop, teamSize)
 		for j := range t.Gops {
-			t.Gops[j] = &Gop{3, t, Position{0, 0}}
+			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Position{float64(4 * i), float64(4 * j)}}
 		}
 		gs.Teams[i] = t
 	}

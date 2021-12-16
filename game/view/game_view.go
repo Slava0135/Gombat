@@ -26,14 +26,17 @@ func drawObjects(img *ebiten.Image, viewOptions *ViewOptions, state *core.GameSt
 }
 
 func drawGops(img *ebiten.Image, viewOptions *ViewOptions, state *core.GameState) {
+	commonOp := new(ebiten.DrawImageOptions)
+	commonOp.GeoM.Scale(viewOptions.Scale, viewOptions.Scale)
+	commonOp.GeoM.Scale(gopSize, gopSize)
+	commonOp.GeoM.Translate(viewOptions.CameraPos.X, viewOptions.CameraPos.Y)
 	op := new(ebiten.DrawImageOptions)
-	op.GeoM.Scale(viewOptions.Scale, viewOptions.Scale)
-	op.GeoM.Scale(gopSize, gopSize)
-	op.GeoM.Translate(viewOptions.CameraPos.X, viewOptions.CameraPos.Y)
-	op.GeoM.Translate(4*viewOptions.Scale*tileSize, 6*viewOptions.Scale*tileSize)
 	for _, team := range state.Teams {
 		gopImg := assets.Images["gop"]
-		for range team.Gops {
+		for _, gop := range team.Gops {
+			op.GeoM.Reset()
+			op.GeoM.Concat(commonOp.GeoM)
+			op.GeoM.Translate(gop.Pos.X*viewOptions.Scale*tileSize, gop.Pos.Y*viewOptions.Scale*tileSize)
 			img.DrawImage(gopImg, op)
 		}
 	}
