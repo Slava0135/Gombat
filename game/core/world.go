@@ -23,6 +23,7 @@ var (
 		{"grass", true},
 		{"road", true},
 		{"water", false},
+		{"sand", true},
 	}
 	Blocks = []*Block{
 		{"air", false, false},

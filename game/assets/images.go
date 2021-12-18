@@ -28,6 +28,8 @@ var (
 	road []byte
 	//go:embed images/floors/water.png
 	water []byte
+	//go:embed images/floors/sand.png
+	sand []byte
 )
 
 var Images = map[string]*ebiten.Image{
@@ -40,6 +42,7 @@ var Images = map[string]*ebiten.Image{
 	"planks":  loadImage(planks),
 	"road":    loadImage(road),
 	"water":   loadImage(water),
+	"sand":    loadImage(sand),
 }
 
 func loadImage(b []byte) *ebiten.Image {
