@@ -18,6 +18,8 @@ var (
 	glass []byte
 	//go:embed images/gop.png
 	gop []byte
+	//go:embed images/gop_team.png
+	gopTeam []byte
 	//go:embed images/floors/grass.png
 	grass []byte
 	//go:embed images/blocks/planks.png
@@ -33,6 +35,7 @@ var Images = map[string]*ebiten.Image{
 	"concrete": loadImage(concrete),
 	"glass":    loadImage(glass),
 	"gop":      loadImage(gop),
+	"gopteam":  loadImage(gopTeam),
 	"grass":    loadImage(grass),
 	"planks":   loadImage(planks),
 	"road":     loadImage(road),

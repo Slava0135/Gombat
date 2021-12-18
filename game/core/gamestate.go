@@ -14,6 +14,7 @@ type Gop struct {
 }
 
 type Team struct {
+	Id   int
 	Gops []*Gop
 }
 
@@ -21,10 +22,9 @@ func NewGameState(teamAmount, teamSize int) *GameState {
 	gs := new(GameState)
 	gs.Teams = make([]*Team, teamAmount)
 	for i := range gs.Teams {
-		t := new(Team)
-		t.Gops = make([]*Gop, teamSize)
+		t := &Team{i, make([]*Gop, teamSize)}
 		for j := range t.Gops {
-			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Position{float64(4 * i), float64(4 * j)}}
+			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Position{X: float64(4 * i), Y: float64(4 * j)}}
 		}
 		gs.Teams[i] = t
 	}
