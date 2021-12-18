@@ -5,7 +5,6 @@ import (
 	"gombat/game/assets"
 	"gombat/game/core"
 	"gombat/game/util"
-	"image/color"
 )
 
 type ViewOptions struct {
@@ -13,7 +12,7 @@ type ViewOptions struct {
 	Scale     float64
 }
 
-const gopSize = tileSize * core.GopSize / 11
+const GopImgSize = TileImgSize * core.GopSize / 11
 
 func DrawGameState(img *ebiten.Image, viewOptions *ViewOptions, state *core.GameState) {
 	drawWorld(img, viewOptions, state.World)
@@ -31,13 +30,13 @@ func drawGops(img *ebiten.Image, viewOptions *ViewOptions, state *core.GameState
 
 	commonOp := new(ebiten.DrawImageOptions)
 	commonOp.GeoM.Scale(viewOptions.Scale, viewOptions.Scale)
-	commonOp.GeoM.Scale(gopSize, gopSize)
-	commonOp.GeoM.Translate(viewOptions.CameraPos.X, viewOptions.CameraPos.Y)
+	commonOp.GeoM.Scale(GopImgSize, GopImgSize)
+	commonOp.GeoM.Translate(-viewOptions.CameraPos.X, -viewOptions.CameraPos.Y)
 	op := new(ebiten.DrawImageOptions)
 	for _, team := range state.Teams {
 		colorOp := new(ebiten.DrawImageOptions)
 
-		c := teamColors[team.Id]
+		c := util.TeamColors[team.Id]
 		colorOp.ColorM.Scale(0, 0, 0, 1)
 		r := float64(c.R) / 0xff
 		g := float64(c.G) / 0xff
@@ -49,15 +48,11 @@ func drawGops(img *ebiten.Image, viewOptions *ViewOptions, state *core.GameState
 		for _, gop := range team.Gops {
 			op.GeoM.Reset()
 			op.GeoM.Concat(commonOp.GeoM)
-			op.GeoM.Translate(gop.Pos.X*viewOptions.Scale*tileSize, gop.Pos.Y*viewOptions.Scale*tileSize)
+			op.GeoM.Translate(
+				(gop.Pos.X-core.GopSize/2)*viewOptions.Scale*TileImgSize,
+				(gop.Pos.Y-core.GopSize/2)*viewOptions.Scale*TileImgSize,
+			)
 			img.DrawImage(gopImgColored, op)
 		}
 	}
-}
-
-var teamColors = []color.RGBA{
-	util.Cyan,
-	util.Red,
-	util.Green,
-	util.Blue,
 }

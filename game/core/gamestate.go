@@ -1,6 +1,8 @@
 package core
 
-import "gombat/game/util"
+import (
+	"gombat/game/util"
+)
 
 type GameState struct {
 	World *World
@@ -29,4 +31,19 @@ func NewGameState(teamAmount, teamSize int) *GameState {
 		gs.Teams[i] = t
 	}
 	return gs
+}
+
+func (gs *GameState) SelectGop(pos util.Position) *Gop {
+	for _, team := range gs.Teams {
+		for _, gop := range team.Gops {
+			if pos.DistanceTo(gop.Pos) < GopSize/2 {
+				return gop
+			}
+		}
+	}
+	return nil
+}
+
+func MoveGop(gop *Gop, pos util.Position) {
+	gop.Pos = pos
 }
