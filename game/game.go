@@ -94,9 +94,7 @@ func (g *Game) updateSelection() {
 		} else {
 			core.MoveGop(g.SelectOptions.GopSelected, util.Position{worldX, worldY})
 		}
-	}
-
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+	} else {
 		g.SelectOptions.GopSelected = nil
 	}
 }
