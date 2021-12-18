@@ -19,7 +19,7 @@ type Block struct {
 
 var (
 	Floors = []*Floor{
-		{"concrete", true},
+		{"stones", true},
 		{"grass", true},
 		{"road", true},
 		{"water", false},

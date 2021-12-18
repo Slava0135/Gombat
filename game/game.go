@@ -24,7 +24,7 @@ type SelectOptions struct {
 func NewGame() *Game {
 	g := new(Game)
 	g.GameState = core.NewGameState(2, 4)
-	m, _ := assets.LoadMap("test3")
+	m, _ := assets.LoadMap("river")
 	g.GameState.World = m
 	g.ViewOptions = &view.ViewOptions{
 		CameraPos: &util.Position{},
