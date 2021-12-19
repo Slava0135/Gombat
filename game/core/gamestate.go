@@ -61,26 +61,40 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 		}
 	}
 
-	if _, _, collided := util.RayTrace(grid, from, to); collided {
-		return false
+	{
+		if _, _, collided := util.RayTrace(grid, from, to); collided {
+			return false
+		}
+
+		vector := util.Vec2{to.X - from.X, to.Y - from.Y}
+		vector = vector.Rotate(math.Pi / 2)
+
+		// assuming gop size is < sqrt(2)
+		dx := GopSize / 2 * vector.X / vector.Norm()
+		dy := GopSize / 2 * vector.Y / vector.Norm()
+
+		// test 2 parallel rays with offsets
+		offset1 := util.Vec2{dx, dy}
+		offset2 := util.Vec2{-dx, -dy}
+
+		if _, _, collided := util.RayTrace(grid, from.Add(offset1), to.Add(offset1)); collided {
+			return false
+		}
+
+		if _, _, collided := util.RayTrace(grid, from.Add(offset2), to.Add(offset2)); collided {
+			return false
+		}
 	}
 
-	vector := util.Vec2{to.X - from.X, to.Y - from.Y}
-	vector = vector.Rotate(math.Pi / 2)
-
-	dx := GopSize / 2 * vector.X / vector.Norm()
-	dy := GopSize / 2 * vector.Y / vector.Norm()
-
-	offset1 := util.Vec2{dx, dy}
-	offset2 := util.Vec2{-dx, -dy}
-
-	if _, _, collided := util.RayTrace(grid, from.Add(offset1), to.Add(offset1)); collided {
-		return false
+	// this is fine
+	for x := 0; x < w.Width; x++ {
+		for y := 0; y < w.Height; y++ {
+			if grid[x][y] {
+				if to.IsInSquareBounds(util.Vec2{float64(x) + 0.5, float64(y) + 0.5}, 0.5+GopSize/2) {
+					return false
+				}
+			}
+		}
 	}
-
-	if _, _, collided := util.RayTrace(grid, from.Add(offset2), to.Add(offset2)); collided {
-		return false
-	}
-
 	return true
 }
