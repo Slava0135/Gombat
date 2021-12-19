@@ -89,12 +89,16 @@ func (g *Game) updateSelection() {
 		worldY := float64(y) + g.ViewOptions.CameraPos.Y
 		worldX /= view.TileImgSize * g.ViewOptions.Scale
 		worldY /= view.TileImgSize * g.ViewOptions.Scale
-		if g.SelectOptions.GopSelected == nil {
-			g.SelectOptions.GopSelected = g.GameState.SelectGop(util.Position{worldX, worldY})
+		pos := util.Position{worldX, worldY}
+		if gop := g.SelectOptions.GopSelected; gop == nil {
+			g.SelectOptions.GopSelected = g.GameState.SelectGop(pos)
 		} else {
-			core.MoveGop(g.SelectOptions.GopSelected, util.Position{worldX, worldY})
+			if ok := g.GameState.World.CanMoveGop(gop.Pos, pos); ok {
+				gop.MoveGop(pos)
+			}
 		}
-	} else {
+	}
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 		g.SelectOptions.GopSelected = nil
 	}
 }

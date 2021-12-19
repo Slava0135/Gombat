@@ -44,6 +44,20 @@ func (gs *GameState) SelectGop(pos util.Position) *Gop {
 	return nil
 }
 
-func MoveGop(gop *Gop, pos util.Position) {
-	gop.Pos = pos
+func (g *Gop) MoveGop(pos util.Position) {
+	g.Pos = pos
+}
+
+func (w *World) CanMoveGop(from, to util.Position) bool {
+	grid := make([][]bool, w.Width)
+	for i := range grid {
+		grid[i] = make([]bool, w.Height)
+	}
+	for i := 0; i < w.Width; i++ {
+		for j := 0; j < w.Height; j++ {
+			grid[i][j] = w.Floors[i][j].Passable == false || w.Blocks[i][j].Solid == true
+		}
+	}
+	_, _, collided := util.RayTrace(grid, from, to)
+	return !collided
 }
