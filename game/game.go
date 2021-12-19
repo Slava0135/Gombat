@@ -27,7 +27,7 @@ func NewGame() *Game {
 	m, _ := assets.LoadMap("river")
 	g.GameState.World = m
 	g.ViewOptions = &view.ViewOptions{
-		CameraPos: &util.Position{},
+		CameraPos: &util.Vec2{},
 		Scale:     4,
 	}
 	g.SelectOptions = new(SelectOptions)
@@ -89,7 +89,7 @@ func (g *Game) updateSelection() {
 		worldY := float64(y) + g.ViewOptions.CameraPos.Y
 		worldX /= view.TileImgSize * g.ViewOptions.Scale
 		worldY /= view.TileImgSize * g.ViewOptions.Scale
-		pos := util.Position{worldX, worldY}
+		pos := util.Vec2{worldX, worldY}
 		if gop := g.SelectOptions.GopSelected; gop == nil {
 			g.SelectOptions.GopSelected = g.GameState.SelectGop(pos)
 		} else {

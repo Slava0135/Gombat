@@ -8,7 +8,7 @@ import (
 )
 
 type ViewOptions struct {
-	CameraPos *util.Position
+	CameraPos *util.Vec2
 	Scale     float64
 }
 

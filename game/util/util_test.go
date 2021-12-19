@@ -5,8 +5,8 @@ import "testing"
 func TestRayTrace(t *testing.T) {
 	type args struct {
 		grid [][]bool
-		from Position
-		to   Position
+		from Vec2
+		to   Vec2
 	}
 	tests := []struct {
 		name   string
@@ -21,8 +21,8 @@ func TestRayTrace(t *testing.T) {
 				[][]bool{
 					{false, false, true, true, false},
 				},
-				Position{0.5, 0.5},
-				Position{0.5, 4.5},
+				Vec2{0.5, 0.5},
+				Vec2{0.5, 4.5},
 			},
 			wantX:  0,
 			wantY:  2,
@@ -38,8 +38,8 @@ func TestRayTrace(t *testing.T) {
 					{true},
 					{true},
 				},
-				Position{0.5, 0.5},
-				Position{4.5, 0.5},
+				Vec2{0.5, 0.5},
+				Vec2{4.5, 0.5},
 			},
 			wantX:  3,
 			wantY:  0,
@@ -53,8 +53,8 @@ func TestRayTrace(t *testing.T) {
 					{false, true, false},
 					{false, false, false},
 				},
-				Position{0, 0},
-				Position{2.5, 2.5},
+				Vec2{0, 0},
+				Vec2{2.5, 2.5},
 			},
 			wantX:  1,
 			wantY:  1,
@@ -68,8 +68,8 @@ func TestRayTrace(t *testing.T) {
 					{true, true, false},
 					{false, false, false},
 				},
-				Position{0, 0},
-				Position{2.5, 1.5},
+				Vec2{0, 0},
+				Vec2{2.5, 1.5},
 			},
 			wantX:  1,
 			wantY:  0,
@@ -85,8 +85,8 @@ func TestRayTrace(t *testing.T) {
 					{false, false, true, false, false},
 					{false, false, false, false, false},
 				},
-				Position{0.5, 4.5},
-				Position{4.5, 1.5},
+				Vec2{0.5, 4.5},
+				Vec2{4.5, 1.5},
 			},
 			wantX:  2,
 			wantY:  2,

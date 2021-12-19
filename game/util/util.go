@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-type Position struct {
+type Vec2 struct {
 	X, Y float64
 }
 
@@ -25,11 +25,30 @@ var TeamColors = []color.RGBA{
 	Green,
 }
 
-func (p *Position) DistanceTo(other Position) float64 {
-	return math.Sqrt(math.Pow(p.X-other.X, 2) + math.Pow(p.Y-other.Y, 2))
+func (v *Vec2) DistanceTo(other Vec2) float64 {
+	return math.Sqrt(math.Pow(v.X-other.X, 2) + math.Pow(v.Y-other.Y, 2))
 }
 
-func RayTrace(grid [][]bool, from, to Position) (x, y int, ok bool) {
+func (v *Vec2) IsInSquareBounds(center Vec2, dist float64) bool {
+	return math.Abs(v.X-center.X) < dist && math.Abs(v.Y-center.Y) < dist
+}
+
+func (v *Vec2) Add(other Vec2) Vec2 {
+	return Vec2{v.X + other.X, v.Y + other.Y}
+}
+
+func (v *Vec2) Rotate(a float64) Vec2 {
+	return Vec2{
+		math.Cos(a)*v.X - math.Sin(a)*v.Y,
+		math.Sin(a)*v.X + math.Cos(a)*v.Y,
+	}
+}
+
+func (v *Vec2) Norm() float64 {
+	return math.Sqrt(math.Pow(v.X, 2) + math.Pow(v.Y, 2))
+}
+
+func RayTrace(grid [][]bool, from, to Vec2) (x, y int, collided bool) {
 
 	dx, dy := math.Abs(from.X-to.X), math.Abs(from.Y-to.Y)
 	x, y = int(math.Floor(from.X)), int(math.Floor(from.Y))
@@ -59,9 +78,10 @@ func RayTrace(grid [][]bool, from, to Position) (x, y int, ok bool) {
 		err -= (from.Y - math.Floor(from.Y)) * dx
 	}
 
+	w, h := len(grid), len(grid[0])
 	xEnd, yEnd := int(math.Floor(to.X)), int(math.Floor(to.Y))
 	for x != xEnd || y != yEnd {
-		if grid[x][y] {
+		if x >= 0 && x < w && y >= 0 && y < h && grid[x][y] {
 			return x, y, true
 		}
 		if err > 0 {
@@ -73,5 +93,5 @@ func RayTrace(grid [][]bool, from, to Position) (x, y int, ok bool) {
 		}
 	}
 
-	return x, y, grid[x][y]
+	return x, y, x >= 0 && x < w && y >= 0 && y < h && grid[x][y]
 }

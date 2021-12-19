@@ -2,6 +2,7 @@ package core
 
 import (
 	"gombat/game/util"
+	"math"
 )
 
 type GameState struct {
@@ -12,7 +13,7 @@ type GameState struct {
 type Gop struct {
 	Health int
 	Team   *Team
-	Pos    util.Position
+	Pos    util.Vec2
 }
 
 type Team struct {
@@ -26,14 +27,14 @@ func NewGameState(teamAmount, teamSize int) *GameState {
 	for i := range gs.Teams {
 		t := &Team{i, make([]*Gop, teamSize)}
 		for j := range t.Gops {
-			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Position{X: float64(4 * i), Y: float64(4 * j)}}
+			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Vec2{X: float64(4 * i), Y: float64(4 * j)}}
 		}
 		gs.Teams[i] = t
 	}
 	return gs
 }
 
-func (gs *GameState) SelectGop(pos util.Position) *Gop {
+func (gs *GameState) SelectGop(pos util.Vec2) *Gop {
 	for _, team := range gs.Teams {
 		for _, gop := range team.Gops {
 			if pos.DistanceTo(gop.Pos) < GopSize/2 {
@@ -44,11 +45,12 @@ func (gs *GameState) SelectGop(pos util.Position) *Gop {
 	return nil
 }
 
-func (g *Gop) MoveGop(pos util.Position) {
+func (g *Gop) MoveGop(pos util.Vec2) {
 	g.Pos = pos
 }
 
-func (w *World) CanMoveGop(from, to util.Position) bool {
+func (w *World) CanMoveGop(from, to util.Vec2) bool {
+
 	grid := make([][]bool, w.Width)
 	for i := range grid {
 		grid[i] = make([]bool, w.Height)
@@ -58,6 +60,27 @@ func (w *World) CanMoveGop(from, to util.Position) bool {
 			grid[i][j] = w.Floors[i][j].Passable == false || w.Blocks[i][j].Solid == true
 		}
 	}
-	_, _, collided := util.RayTrace(grid, from, to)
-	return !collided
+
+	if _, _, collided := util.RayTrace(grid, from, to); collided {
+		return false
+	}
+
+	vector := util.Vec2{to.X - from.X, to.Y - from.Y}
+	vector = vector.Rotate(math.Pi / 2)
+
+	dx := GopSize / 2 * vector.X / vector.Norm()
+	dy := GopSize / 2 * vector.Y / vector.Norm()
+
+	offset1 := util.Vec2{dx, dy}
+	offset2 := util.Vec2{-dx, -dy}
+
+	if _, _, collided := util.RayTrace(grid, from.Add(offset1), to.Add(offset1)); collided {
+		return false
+	}
+
+	if _, _, collided := util.RayTrace(grid, from.Add(offset2), to.Add(offset2)); collided {
+		return false
+	}
+
+	return true
 }
