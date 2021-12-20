@@ -101,3 +101,22 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 	}
 	return true
 }
+
+func (gs *GameState) Shoot(from, to util.Vec2) {
+	w := gs.World
+	collisionGrid := make([][]bool, w.Width)
+	for i := range collisionGrid {
+		collisionGrid[i] = make([]bool, w.Height)
+	}
+	for i := 0; i < w.Width; i++ {
+		for j := 0; j < w.Height; j++ {
+			collisionGrid[i][j] = w.Blocks[i][j].Solid == true
+		}
+	}
+
+	if x, y, collided := util.RayTraceUntilHit(collisionGrid, from, to); collided {
+		if util.IsInBounds(x, y, w.Width, w.Height) && w.Blocks[x][y].Destructible {
+			w.Blocks[x][y] = Blocks[0]
+		}
+	}
+}

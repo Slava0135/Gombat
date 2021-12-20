@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"gombat/game/assets"
 	"gombat/game/core"
 	"gombat/game/util"
@@ -18,6 +19,7 @@ type Game struct {
 }
 
 type SelectOptions struct {
+	Action      int
 	GopSelected *core.Gop
 }
 
@@ -83,22 +85,41 @@ func (g *Game) updateScale() {
 }
 
 func (g *Game) updateSelection() {
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-		worldX := float64(x) + g.ViewOptions.CameraPos.X
-		worldY := float64(y) + g.ViewOptions.CameraPos.Y
-		worldX /= view.TileImgSize * g.ViewOptions.Scale
-		worldY /= view.TileImgSize * g.ViewOptions.Scale
-		pos := util.Vec2{worldX, worldY}
-		if gop := g.SelectOptions.GopSelected; gop == nil {
-			g.SelectOptions.GopSelected = g.GameState.SelectGop(pos)
-		} else {
-			if ok := g.GameState.World.CanMoveGop(gop.Pos, pos); ok {
-				gop.MoveGop(pos)
+
+	x, y := ebiten.CursorPosition()
+	worldX := float64(x) + g.ViewOptions.CameraPos.X
+	worldY := float64(y) + g.ViewOptions.CameraPos.Y
+	worldX /= view.TileImgSize * g.ViewOptions.Scale
+	worldY /= view.TileImgSize * g.ViewOptions.Scale
+	cursorPos := util.Vec2{worldX, worldY}
+
+	if ebiten.IsKeyPressed(ebiten.Key1) {
+		g.SelectOptions.Action = 1
+	}
+	if ebiten.IsKeyPressed(ebiten.Key2) {
+		g.SelectOptions.Action = 2
+	}
+	switch g.SelectOptions.Action {
+	case 1:
+		{
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				if gop := g.SelectOptions.GopSelected; gop == nil {
+					g.SelectOptions.GopSelected = g.GameState.SelectGop(cursorPos)
+				} else {
+					if ok := g.GameState.World.CanMoveGop(gop.Pos, cursorPos); ok {
+						gop.MoveGop(cursorPos)
+					}
+				}
+			}
+			if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+				g.SelectOptions.GopSelected = nil
 			}
 		}
-	}
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
-		g.SelectOptions.GopSelected = nil
+	case 2:
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			if g.SelectOptions.GopSelected != nil {
+				g.GameState.Shoot(g.SelectOptions.GopSelected.Pos, cursorPos)
+			}
+		}
 	}
 }

@@ -15,6 +15,7 @@ type Block struct {
 	Name         string
 	Solid        bool
 	Destructible bool
+	Fragile      bool
 }
 
 var (
@@ -26,10 +27,10 @@ var (
 		{"sand", true},
 	}
 	Blocks = []*Block{
-		{"air", false, false},
-		{"bricks", true, false},
-		{"glass", true, true},
-		{"planks", true, true},
+		{"air", false, false, false},
+		{"bricks", true, false, false},
+		{"glass", true, true, true},
+		{"planks", true, true, false},
 	}
 )
 

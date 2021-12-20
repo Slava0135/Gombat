@@ -5,10 +5,6 @@ import (
 	"math"
 )
 
-type Vec2 struct {
-	X, Y float64
-}
-
 var (
 	Red    = color.RGBA{0xf0, 0x0, 0x0, 0xff}
 	Green  = color.RGBA{0x0, 0xf0, 0x0, 0xff}
@@ -25,6 +21,10 @@ var TeamColors = []color.RGBA{
 	Green,
 }
 
+type Vec2 struct {
+	X, Y float64
+}
+
 func (v *Vec2) DistanceTo(other Vec2) float64 {
 	return math.Sqrt(math.Pow(v.X-other.X, 2) + math.Pow(v.Y-other.Y, 2))
 }
@@ -37,7 +37,7 @@ func (v *Vec2) Add(other Vec2) Vec2 {
 	return Vec2{v.X + other.X, v.Y + other.Y}
 }
 
-func (v *Vec2) Rotate(a float64) Vec2 {
+func (v *Vec2) Rotated(a float64) Vec2 {
 	return Vec2{
 		math.Cos(a)*v.X - math.Sin(a)*v.Y,
 		math.Sin(a)*v.X + math.Cos(a)*v.Y,
@@ -53,7 +53,15 @@ func (v *Vec2) Normalised() Vec2 {
 	return Vec2{v.X / n, v.Y / n}
 }
 
-func RayTrace(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
+func NewVector(from, to Vec2) Vec2 {
+	return Vec2{to.X - from.X, to.Y - from.Y}
+}
+
+func (v *Vec2) Scaled(n float64) Vec2 {
+	return Vec2{n * v.X, n * v.Y}
+}
+
+func rayTrace(collisionGrid [][]bool, from, to Vec2, runUntilHit bool) (x, y int, collided bool) {
 
 	dx, dy := math.Abs(from.X-to.X), math.Abs(from.Y-to.Y)
 	x, y = int(math.Floor(from.X)), int(math.Floor(from.Y))
@@ -85,8 +93,8 @@ func RayTrace(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
 
 	w, h := len(collisionGrid), len(collisionGrid[0])
 	xEnd, yEnd := int(math.Floor(to.X)), int(math.Floor(to.Y))
-	for x != xEnd || y != yEnd {
-		if x >= 0 && x < w && y >= 0 && y < h && collisionGrid[x][y] {
+	for runUntilHit || x != xEnd || y != yEnd {
+		if !IsInBounds(x, y, w, h) || collisionGrid[x][y] {
 			return x, y, true
 		}
 		if err > 0 {
@@ -98,5 +106,17 @@ func RayTrace(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
 		}
 	}
 
-	return x, y, x >= 0 && x < w && y >= 0 && y < h && collisionGrid[x][y]
+	return x, y, !IsInBounds(x, y, w, h) || collisionGrid[x][y]
+}
+
+func RayTrace(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
+	return rayTrace(collisionGrid, from, to, false)
+}
+
+func RayTraceUntilHit(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
+	return rayTrace(collisionGrid, from, to, true)
+}
+
+func IsInBounds(x, y, w, h int) bool {
+	return x >= 0 && x < w && y >= 0 && y < h
 }
