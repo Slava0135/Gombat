@@ -37,7 +37,7 @@ func NewGameState(teamAmount, teamSize int) *GameState {
 func (gs *GameState) SelectGop(pos util.Vec2) *Gop {
 	for _, team := range gs.Teams {
 		for _, gop := range team.Gops {
-			if pos.DistanceTo(gop.Pos) < GopSize/2 {
+			if pos.IsInSquareBounds(gop.Pos, GopSize/2) {
 				return gop
 			}
 		}
