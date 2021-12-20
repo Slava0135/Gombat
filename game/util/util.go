@@ -48,7 +48,12 @@ func (v *Vec2) Norm() float64 {
 	return math.Sqrt(math.Pow(v.X, 2) + math.Pow(v.Y, 2))
 }
 
-func RayTrace(grid [][]bool, from, to Vec2) (x, y int, collided bool) {
+func (v *Vec2) Normalised() Vec2 {
+	n := v.Norm()
+	return Vec2{v.X / n, v.Y / n}
+}
+
+func RayTrace(collisionGrid [][]bool, from, to Vec2) (x, y int, collided bool) {
 
 	dx, dy := math.Abs(from.X-to.X), math.Abs(from.Y-to.Y)
 	x, y = int(math.Floor(from.X)), int(math.Floor(from.Y))
@@ -78,10 +83,10 @@ func RayTrace(grid [][]bool, from, to Vec2) (x, y int, collided bool) {
 		err -= (from.Y - math.Floor(from.Y)) * dx
 	}
 
-	w, h := len(grid), len(grid[0])
+	w, h := len(collisionGrid), len(collisionGrid[0])
 	xEnd, yEnd := int(math.Floor(to.X)), int(math.Floor(to.Y))
 	for x != xEnd || y != yEnd {
-		if x >= 0 && x < w && y >= 0 && y < h && grid[x][y] {
+		if x >= 0 && x < w && y >= 0 && y < h && collisionGrid[x][y] {
 			return x, y, true
 		}
 		if err > 0 {
@@ -93,5 +98,5 @@ func RayTrace(grid [][]bool, from, to Vec2) (x, y int, collided bool) {
 		}
 	}
 
-	return x, y, x >= 0 && x < w && y >= 0 && y < h && grid[x][y]
+	return x, y, x >= 0 && x < w && y >= 0 && y < h && collisionGrid[x][y]
 }
