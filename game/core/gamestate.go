@@ -66,21 +66,26 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 			return false
 		}
 
-		vector := util.Vec2{to.X - from.X, to.Y - from.Y}
-		vector = vector.Normalised()
-		vector = vector.Rotate(math.Pi / 2)
+		dx := GopSize / math.Sqrt(2) / 2
+		dy := GopSize / math.Sqrt(2) / 2
 
-		dx := GopSize / 2 * vector.X
-		dy := GopSize / 2 * vector.Y
-
-		offset1 := util.Vec2{dx, dy}
-		offset2 := util.Vec2{-dx, -dy}
-
-		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset1), to.Add(offset1)); collided {
+		offset := util.Vec2{dx, dy}
+		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
 
-		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset2), to.Add(offset2)); collided {
+		offset = util.Vec2{-dx, -dy}
+		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
+			return false
+		}
+
+		offset = util.Vec2{-dx, dy}
+		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
+			return false
+		}
+
+		offset = util.Vec2{dx, -dy}
+		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
 	}
