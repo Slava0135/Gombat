@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"gombat/game/assets"
 	"gombat/game/core"
 	"gombat/game/util"
@@ -83,7 +84,7 @@ func (g *Game) updateScale() {
 }
 
 func (g *Game) updateSelection() {
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 		worldX := float64(x) + g.ViewOptions.CameraPos.X
 		worldY := float64(y) + g.ViewOptions.CameraPos.Y
