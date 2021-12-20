@@ -4,6 +4,7 @@ type World struct {
 	Width, Height int
 	Floors        [][]*Floor
 	Blocks        [][]*Block
+	Stains        [][]bool
 }
 
 type Floor struct {
@@ -45,6 +46,10 @@ func NewEmptyWorld(width, height int) *World {
 	w.Floors = make([][]*Floor, width)
 	for i := range w.Floors {
 		w.Floors[i] = make([]*Floor, height)
+	}
+	w.Stains = make([][]bool, width)
+	for i := range w.Stains {
+		w.Stains[i] = make([]bool, height)
 	}
 	return w
 }

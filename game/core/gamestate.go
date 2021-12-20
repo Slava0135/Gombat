@@ -17,17 +17,18 @@ type Gop struct {
 }
 
 type Team struct {
-	Id   int
-	Gops []*Gop
+	Id       int
+	Gops     []*Gop
+	DeadGops []util.Vec2
 }
 
 func NewGameState(teamAmount, teamSize int) *GameState {
 	gs := new(GameState)
 	gs.Teams = make([]*Team, teamAmount)
 	for i := range gs.Teams {
-		t := &Team{i, make([]*Gop, teamSize)}
+		t := &Team{i, make([]*Gop, teamSize), make([]util.Vec2, 0, teamSize)}
 		for j := range t.Gops {
-			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Vec2{X: float64(4 * i), Y: float64(4 * j)}}
+			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Vec2{X: float64(2*i) + 1, Y: float64(2*j) + 1}}
 		}
 		gs.Teams[i] = t
 	}
@@ -69,22 +70,22 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 		dx := GopSize / math.Sqrt(2) / 2
 		dy := GopSize / math.Sqrt(2) / 2
 
-		offset := util.Vec2{dx, dy}
+		offset := util.Vec2{X: dx, Y: dy}
 		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
 
-		offset = util.Vec2{-dx, -dy}
+		offset = util.Vec2{X: -dx, Y: -dy}
 		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
 
-		offset = util.Vec2{-dx, dy}
+		offset = util.Vec2{X: -dx, Y: dy}
 		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
 
-		offset = util.Vec2{dx, -dy}
+		offset = util.Vec2{X: dx, Y: -dy}
 		if _, _, collided := util.RayTrace(collisionGrid, from.Add(offset), to.Add(offset)); collided {
 			return false
 		}
@@ -93,7 +94,7 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 	for x := 0; x < w.Width; x++ {
 		for y := 0; y < w.Height; y++ {
 			if collisionGrid[x][y] {
-				if to.IsInSquareBounds(util.Vec2{float64(x) + 0.5, float64(y) + 0.5}, 0.5+GopSize/2) {
+				if to.IsInSquareBounds(util.Vec2{X: float64(x) + 0.5, Y: float64(y) + 0.5}, 0.5+GopSize/2) {
 					return false
 				}
 			}
@@ -115,26 +116,43 @@ func (gs *GameState) Shoot(from, to util.Vec2) {
 	}
 
 	x, y, _ := util.RayTraceUntilHit(collisionGrid, from, to)
-	blockHit := util.Vec2{float64(x), float64(y)}
+	blockHit := util.Vec2{X: float64(x), Y: float64(y)}
 	hitDist := from.DistanceTo(blockHit)
 
 	minGopDist := math.Inf(1)
+	var gop *Gop
 	for _, t := range gs.Teams {
 		for _, g := range t.Gops {
 			if g.Pos != from && util.DoesLineIntersectSquare(from, to, g.Pos, GopSize) {
 				dist := from.DistanceTo(g.Pos)
 				if blockHit.DistanceTo(g.Pos)+GopSize/2 < dist+hitDist { // gop is in correct direction
 					minGopDist = math.Min(dist, minGopDist)
+					gop = g
 				}
 			}
 		}
 	}
 
 	if minGopDist < hitDist {
-
+		gs.Damage(gop)
 	} else if util.IsInBounds(x, y, w.Width, w.Height) {
 		if w.Blocks[x][y].Destructible {
 			w.Blocks[x][y] = Blocks[0]
+		}
+	}
+}
+
+func (gs *GameState) Damage(g *Gop) {
+	x, y := int(math.Round(g.Pos.X)), int(math.Round(g.Pos.Y))
+	gs.World.Stains[x][y] = true
+	g.Health--
+	if g.Health <= 0 {
+		g.Team.DeadGops = append(g.Team.DeadGops, g.Pos)
+		for i := range g.Team.Gops {
+			if g.Team.Gops[i] == g {
+				g.Team.Gops = append(g.Team.Gops[:i], g.Team.Gops[i+1:]...)
+				break
+			}
 		}
 	}
 }

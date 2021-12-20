@@ -20,6 +20,10 @@ var (
 	gop []byte
 	//go:embed images/gop_team.png
 	gopTeam []byte
+	//go:embed images/dead_gop.png
+	deadGop []byte
+	//go:embed images/dead_gop_team.png
+	deadGopTeam []byte
 	//go:embed images/floors/grass.png
 	grass []byte
 	//go:embed images/blocks/planks.png
@@ -30,19 +34,24 @@ var (
 	water []byte
 	//go:embed images/floors/sand.png
 	sand []byte
+	//go:embed images/objects/stain.png
+	stain []byte
 )
 
 var Images = map[string]*ebiten.Image{
-	"bricks":  loadImage(bricks),
-	"stones":  loadImage(stones),
-	"glass":   loadImage(glass),
-	"gop":     loadImage(gop),
-	"gopteam": loadImage(gopTeam),
-	"grass":   loadImage(grass),
-	"planks":  loadImage(planks),
-	"road":    loadImage(road),
-	"water":   loadImage(water),
-	"sand":    loadImage(sand),
+	"bricks":      loadImage(bricks),
+	"stones":      loadImage(stones),
+	"glass":       loadImage(glass),
+	"gop":         loadImage(gop),
+	"gopteam":     loadImage(gopTeam),
+	"deadgop":     loadImage(deadGop),
+	"deadgopteam": loadImage(deadGopTeam),
+	"grass":       loadImage(grass),
+	"planks":      loadImage(planks),
+	"road":        loadImage(road),
+	"water":       loadImage(water),
+	"sand":        loadImage(sand),
+	"stain":       loadImage(stain),
 }
 
 func loadImage(b []byte) *ebiten.Image {
