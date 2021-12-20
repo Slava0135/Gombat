@@ -108,3 +108,45 @@ func TestRayTrace(t *testing.T) {
 		})
 	}
 }
+
+func TestDoesLineIntersectSquare(t *testing.T) {
+	type args struct {
+		lineStart Vec2
+		lineDir   Vec2
+		center    Vec2
+		side      float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			"simple",
+			args{
+				Vec2{0, 0},
+				Vec2{1, 0},
+				Vec2{0, 0},
+				1,
+			},
+			true,
+		},
+		{
+			"simple2",
+			args{
+				Vec2{0, 0},
+				Vec2{1, 0},
+				Vec2{0, 2},
+				1,
+			},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DoesLineIntersectSquare(tt.args.lineStart, tt.args.lineDir, tt.args.center, tt.args.side); got != tt.want {
+				t.Errorf("DoesLineIntersectSquare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

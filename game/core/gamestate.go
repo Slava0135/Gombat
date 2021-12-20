@@ -114,8 +114,26 @@ func (gs *GameState) Shoot(from, to util.Vec2) {
 		}
 	}
 
-	if x, y, collided := util.RayTraceUntilHit(collisionGrid, from, to); collided {
-		if util.IsInBounds(x, y, w.Width, w.Height) && w.Blocks[x][y].Destructible {
+	x, y, _ := util.RayTraceUntilHit(collisionGrid, from, to)
+	blockHit := util.Vec2{float64(x), float64(y)}
+	hitDist := from.DistanceTo(blockHit)
+
+	minGopDist := math.Inf(1)
+	for _, t := range gs.Teams {
+		for _, g := range t.Gops {
+			if g.Pos != from && util.DoesLineIntersectSquare(from, to, g.Pos, GopSize) {
+				dist := from.DistanceTo(g.Pos)
+				if blockHit.DistanceTo(g.Pos)+GopSize/2 < dist+hitDist { // gop is in correct direction
+					minGopDist = math.Min(dist, minGopDist)
+				}
+			}
+		}
+	}
+
+	if minGopDist < hitDist {
+
+	} else if util.IsInBounds(x, y, w.Width, w.Height) {
+		if w.Blocks[x][y].Destructible {
 			w.Blocks[x][y] = Blocks[0]
 		}
 	}

@@ -120,3 +120,14 @@ func RayTraceUntilHit(collisionGrid [][]bool, from, to Vec2) (x, y int, collided
 func IsInBounds(x, y, w, h int) bool {
 	return x >= 0 && x < w && y >= 0 && y < h
 }
+
+func DoesLineIntersectSquare(p1, p2, c Vec2, side float64) bool {
+	isLeft := func(x0, y0 float64) bool {
+		return (p1.X-x0)*(p2.Y-y0)-(p2.X-x0)*(p1.Y-y0) > 0
+	}
+	half := side / (2 * math.Sqrt(2))
+	s := isLeft(c.X+half, c.Y+half)
+	return (isLeft(c.X-half, c.Y+half) != s) ||
+		(isLeft(c.X+half, c.Y-half) != s) ||
+		(isLeft(c.X-half, c.Y-half) != s)
+}
