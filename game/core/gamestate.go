@@ -22,19 +22,6 @@ type Team struct {
 	DeadGops []util.Vec2
 }
 
-func NewGameState(teamAmount, teamSize int) *GameState {
-	gs := new(GameState)
-	gs.Teams = make([]*Team, teamAmount)
-	for i := range gs.Teams {
-		t := &Team{i, make([]*Gop, teamSize), make([]util.Vec2, 0, teamSize)}
-		for j := range t.Gops {
-			t.Gops[j] = &Gop{Health: 3, Team: t, Pos: util.Vec2{X: float64(2*i) + 1, Y: float64(2*j) + 1}}
-		}
-		gs.Teams[i] = t
-	}
-	return gs
-}
-
 func (gs *GameState) SelectGop(pos util.Vec2) *Gop {
 	for _, team := range gs.Teams {
 		for _, gop := range team.Gops {
