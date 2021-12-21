@@ -115,30 +115,40 @@ func (gs *GameState) Shoot(from, to util.Vec2) {
 		}
 	}
 
-	x, y, _ := util.RayTraceUntilHit(collisionGrid, from, to)
-	blockHit := util.Vec2{X: float64(x), Y: float64(y)}
-	hitDist := from.DistanceTo(blockHit)
+	shoot := func() bool {
+		x, y, _ := util.RayTraceUntilHit(collisionGrid, from, to)
+		blockHit := util.Vec2{X: float64(x), Y: float64(y)}
+		hitDist := from.DistanceTo(blockHit)
 
-	minGopDist := math.Inf(1)
-	var gop *Gop
-	for _, t := range gs.Teams {
-		for _, g := range t.Gops {
-			if g.Pos != from && util.DoesLineIntersectSquare(from, to, g.Pos, GopSize) {
-				dist := from.DistanceTo(g.Pos)
-				if blockHit.DistanceTo(g.Pos)+GopSize/2 < dist+hitDist { // gop is in correct direction
-					minGopDist = math.Min(dist, minGopDist)
-					gop = g
+		minGopDist := math.Inf(1)
+		var gop *Gop
+		for _, t := range gs.Teams {
+			for _, g := range t.Gops {
+				if g.Pos != from && util.DoesLineIntersectSquare(from, to, g.Pos, GopSize) {
+					dist := from.DistanceTo(g.Pos)
+					if blockHit.DistanceTo(g.Pos)+GopSize/2 < dist+hitDist { // gop is in correct direction
+						minGopDist = math.Min(dist, minGopDist)
+						gop = g
+					}
 				}
 			}
 		}
-	}
 
-	if minGopDist < hitDist {
-		gs.Damage(gop)
-	} else if util.IsInBounds(x, y, w.Width, w.Height) {
-		if w.Blocks[x][y].Destructible {
-			w.Blocks[x][y] = Blocks[0]
+		if minGopDist < hitDist {
+			gs.Damage(gop)
+		} else if util.IsInBounds(x, y, w.Width, w.Height) {
+			repeat := w.Blocks[x][y].Fragile
+			if w.Blocks[x][y].Destructible {
+				w.Blocks[x][y] = Blocks[0]
+			}
+			if repeat {
+				collisionGrid[x][y] = false
+				return true
+			}
 		}
+		return false
+	}
+	for shoot() {
 	}
 }
 
