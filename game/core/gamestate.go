@@ -140,7 +140,7 @@ func (gs *GameState) Shoot(from, to util.Vec2) {
 }
 
 func (gs *GameState) Damage(g *Gop) {
-	x, y := int(math.Round(g.Pos.X)), int(math.Round(g.Pos.Y))
+	x, y := int(math.Round(g.Pos.X-0.5)), int(math.Round(g.Pos.Y-0.5))
 	gs.World.Stains[x][y] = true
 	g.Health--
 	if g.Health <= 0 {

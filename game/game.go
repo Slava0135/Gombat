@@ -1,13 +1,14 @@
 package game
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"gombat/game/assets"
 	"gombat/game/core"
 	"gombat/game/util"
 	"gombat/game/view"
 	"math"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 const scrollSpeed = 32
@@ -92,7 +93,7 @@ func (g *Game) updateSelection() {
 	worldY := float64(y) + g.ViewOptions.CameraPos.Y
 	worldX /= view.TileImgSize * g.ViewOptions.Scale
 	worldY /= view.TileImgSize * g.ViewOptions.Scale
-	cursorPos := util.Vec2{worldX, worldY}
+	cursorPos := util.Vec2{X: worldX, Y: worldY}
 
 	if ebiten.IsKeyPressed(ebiten.Key1) {
 		g.SelectOptions.Action = 1
