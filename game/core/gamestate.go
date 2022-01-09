@@ -45,7 +45,7 @@ func (w *World) CanMoveGop(from, to util.Vec2) bool {
 	}
 	for i := 0; i < w.Width; i++ {
 		for j := 0; j < w.Height; j++ {
-			collisionGrid[i][j] = w.Floors[i][j].Passable == false || w.Blocks[i][j].Solid == true
+			collisionGrid[i][j] = !w.Floors[i][j].Passable || w.Blocks[i][j].Solid
 		}
 	}
 
@@ -98,7 +98,7 @@ func (gs *GameState) Shoot(from, to util.Vec2) {
 	}
 	for i := 0; i < w.Width; i++ {
 		for j := 0; j < w.Height; j++ {
-			collisionGrid[i][j] = w.Blocks[i][j].Solid == true
+			collisionGrid[i][j] = w.Blocks[i][j].Solid
 		}
 	}
 
