@@ -21,17 +21,17 @@ type Block struct {
 
 var (
 	Floors = []*Floor{
-		{"stones", true},
-		{"grass", true},
-		{"road", true},
-		{"water", false},
-		{"sand", true},
+		{Name: "stones", Passable: true},
+		{Name: "grass", Passable: true},
+		{Name: "road", Passable: true},
+		{Name: "water", Passable: false},
+		{Name: "sand", Passable: true},
 	}
 	Blocks = []*Block{
-		{"air", false, false, false},
-		{"bricks", true, false, false},
-		{"glass", true, true, true},
-		{"planks", true, true, false},
+		{Name: "air", Solid: false, Destructible: false, Fragile: false},
+		{Name: "bricks", Solid: true, Destructible: false, Fragile: false},
+		{Name: "glass", Solid: true, Destructible: true, Fragile: true},
+		{Name: "planks", Solid: true, Destructible: true, Fragile: false},
 	}
 )
 
