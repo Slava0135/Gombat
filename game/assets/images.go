@@ -3,10 +3,11 @@ package assets
 import (
 	"bytes"
 	_ "embed"
-	"github.com/hajimehoshi/ebiten/v2"
 	"image"
 	_ "image/png"
 	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
